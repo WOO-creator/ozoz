@@ -14,99 +14,102 @@
         body { margin: 0; padding: 0; background-color: #000; overflow: hidden; font-family: 'Courier New', Courier, monospace; color: #0f0; }
 
         /* =========================================
-           2. 인트로 페이지 (Security Gate)
+           2. [1단계] 로그인 오버레이 (가장 최상단)
            ========================================= */
-        #intro-layer {
+        #login-screen {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 9999;
-            
-            /* 3D 회전 설정 */
-            transform-origin: left center;
-            transition: transform 1.5s cubic-bezier(0.645, 0.045, 0.355, 1.000);
-            background-color: #111;
-            
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000;
+            z-index: 10000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            box-shadow: 10px 0 30px rgba(0,255,0,0.2);
+            transition: opacity 1s ease-in-out;
         }
 
-        /* 인트로 이미지 스타일 */
-        #intro-layer img {
-            max-width: 300px;
+        /* [NEW] 프리뷰 이미지 스타일 */
+        .preview-img {
+            width: 150px; /* 작게 보여주기 */
             height: auto;
-            border: 2px solid #0f0;
-            box-shadow: 0 0 20px #0f0;
-            border-radius: 5px;
-            margin-bottom: 20px;
+            border: 1px solid #0f0;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+            margin-bottom: 25px;
+            opacity: 0.8;
+            border-radius: 4px;
         }
 
-        /* [NEW] 비밀번호 입력 UI 스타일 */
         .login-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
+            display: flex; flex-direction: column; align-items: center; gap: 15px;
+            border: 1px solid #0f0; padding: 40px;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+            background: rgba(0, 20, 0, 0.9);
         }
 
         #pass-input {
-            background: #000;
-            border: 1px solid #0f0;
-            color: #0f0;
-            padding: 10px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1.2rem;
-            text-align: center;
-            width: 200px;
-            outline: none;
+            background: #000; border: 1px solid #0f0; color: #0f0;
+            padding: 10px; font-family: 'Courier New', Courier, monospace;
+            font-size: 1.2rem; text-align: center; width: 200px; outline: none;
             box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
         }
         #pass-input:focus { box-shadow: 0 0 20px rgba(0, 255, 0, 0.8); }
 
         #access-btn {
-            background: rgba(0, 255, 0, 0.1);
-            border: 1px solid #0f0;
-            color: #0f0;
-            padding: 8px 20px;
-            cursor: pointer;
-            font-weight: bold;
-            font-family: 'Courier New', Courier, monospace;
-            transition: 0.3s;
+            background: rgba(0, 255, 0, 0.1); border: 1px solid #0f0; color: #0f0;
+            padding: 8px 20px; cursor: pointer; font-weight: bold;
+            font-family: 'Courier New', Courier, monospace; transition: 0.3s;
         }
         #access-btn:hover { background: #0f0; color: #000; }
 
         #error-msg {
-            color: #f00;
-            font-weight: bold;
-            height: 20px;
-            text-shadow: 0 0 5px #f00;
-            opacity: 0;
-            transition: opacity 0.2s;
+            color: #f00; font-weight: bold; height: 20px;
+            text-shadow: 0 0 5px #f00; opacity: 0; transition: opacity 0.2s;
+        }
+        #success-msg {
+            color: #0f0; font-weight: bold; height: 20px; display: none;
+            text-shadow: 0 0 10px #0f0; letter-spacing: 2px;
         }
 
-        /* 틀렸을 때 흔들리는 애니메이션 */
         .shake { animation: shake 0.5s; }
         @keyframes shake {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            50% { transform: translateX(10px); }
-            75% { transform: translateX(-10px); }
+            0% { transform: translateX(0); } 25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); } 75% { transform: translateX(-10px); }
             100% { transform: translateX(0); }
         }
 
-        /* 책장이 넘어갔을 때 */
+        /* =========================================
+           3. [2단계] 인트로 이미지 레이어 (중간 단계)
+           ========================================= */
+        #intro-layer {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 9999;
+            background-color: #111;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transform-origin: left center;
+            transition: transform 1.5s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+            cursor: pointer;
+            box-shadow: 10px 0 30px rgba(0,255,0,0.2);
+        }
+
+        #intro-layer img {
+            max-width: 60%; height: auto;
+            border: 2px solid #0f0; box-shadow: 0 0 20px #0f0;
+            border-radius: 5px; margin-bottom: 30px; pointer-events: none;
+        }
+
+        .click-guide {
+            font-size: 1.2rem; color: #0f0; text-shadow: 0 0 10px #0f0;
+            animation: blink 2s infinite; letter-spacing: 2px;
+        }
+
         .page-turned {
             transform: perspective(2000px) rotateY(-110deg);
             pointer-events: none;
         }
 
         /* =========================================
-           3. 뮤직 플레이어 UI (ozcastle)
+           4. 뮤직 플레이어 UI (ozcastle)
            ========================================= */
         #canvas-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
         
@@ -145,15 +148,11 @@
             backdrop-filter: blur(10px);
         }
         #smart-dock.expanded {
-            width: 400px; height: 180px;
-            border-radius: 20px;
-            border-color: #fff;
-            box-shadow: 0 0 50px rgba(0, 255, 0, 0.2);
+            width: 400px; height: 180px; border-radius: 20px; border-color: #fff; box-shadow: 0 0 50px rgba(0, 255, 0, 0.2);
         }
         #dock-toggle {
             position: absolute; bottom: 0; left: 0; width: 60px; height: 60px;
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer; z-index: 22; font-size: 24px;
+            display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 22; font-size: 24px;
         }
         #dock-icon { transition: 0.3s; }
         #smart-dock.expanded #dock-icon { opacity: 0; }
@@ -165,14 +164,12 @@
             opacity: 0; transition: opacity 0.2s; pointer-events: none;
         }
         #smart-dock.expanded #controls-inner { opacity: 1; pointer-events: auto; transition-delay: 0.1s; }
-
         #close-btn { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; color: #666; transition: 0.2s; }
         #close-btn:hover { color: #fff; }
 
         .control-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         button.cyber-btn { background: transparent; border: 1px solid #0f0; color: #0f0; padding: 8px 16px; font-size: 14px; font-weight: bold; cursor: pointer; border-radius: 4px; }
         button.cyber-btn:hover { background: #0f0; color: #000; }
-
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type=range]:focus { outline: none; }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%; background: #0f0; margin-top: -5px; cursor: pointer; box-shadow: 0 0 10px #0f0; }
@@ -182,14 +179,23 @@
 </head>
 <body>
 
-    <div id="intro-layer">
-        <img src="intro.png" alt="System Access Card">
+    <div id="login-screen">
+        <h2 style="margin-bottom: 10px; letter-spacing: 5px; text-shadow: 0 0 20px #0f0;">SECURITY CHECK</h2>
         
+        <img src="intro.png" class="preview-img" alt="Card Preview">
+
         <div class="login-box">
             <div id="error-msg">DAMN~</div>
-            <input type="password" id="pass-input" placeholder="ENTER PASSWORD">
+            <div id="success-msg">CMON~</div>
+            
+            <input type="password" id="pass-input" placeholder="PASSWORD">
             <button id="access-btn" onclick="checkPassword()">WHASSUP</button>
         </div>
+    </div>
+
+    <div id="intro-layer" onclick="flipPage()">
+        <img src="intro.png" alt="Intro Image">
+        <p class="click-guide">>>> CLICK TO ENTER <<<</p>
     </div>
 
     <div id="progress-bar-container"><div id="progress-bar"></div></div>
@@ -225,28 +231,34 @@
 
     <script>
         // ==========================================
-        // 1. PASSWORD & INTRO LOGIC
+        // 1. LOGIN & INTRO LOGIC
         // ==========================================
-        const CORRECT_PASSWORD = "0202";
+        const CORRECT_PASSWORD = "1234"; 
 
         function checkPassword() {
             const inputField = document.getElementById('pass-input');
             const errorMsg = document.getElementById('error-msg');
-            const introDiv = document.getElementById('intro-layer');
+            const successMsg = document.getElementById('success-msg');
+            const loginScreen = document.getElementById('login-screen');
 
             if (inputField.value === CORRECT_PASSWORD) {
-                // 비밀번호 정답
-                introDiv.classList.add('page-turned'); // 페이지 넘김 효과
-                setTimeout(() => {
-                    introDiv.style.display = 'none';
-                }, 1500);
-            } else {
-                // 비밀번호 오답
-                errorMsg.style.opacity = 1;
-                inputField.classList.add('shake'); // 흔들림 효과
-                inputField.value = ''; // 입력창 초기화
+                // 성공 처리
+                errorMsg.style.display = 'none';
+                successMsg.style.display = 'block';
+                inputField.style.borderColor = '#fff';
                 
-                // 애니메이션 끝나면 클래스 제거 (재사용 위해)
+                setTimeout(() => {
+                    loginScreen.style.opacity = 0;
+                    setTimeout(() => {
+                        loginScreen.style.display = 'none';
+                    }, 1000);
+                }, 800);
+
+            } else {
+                // 실패 처리
+                errorMsg.style.opacity = 1;
+                inputField.classList.add('shake'); 
+                inputField.value = '';
                 setTimeout(() => {
                     inputField.classList.remove('shake');
                     errorMsg.style.opacity = 0;
@@ -254,20 +266,23 @@
             }
         }
 
-        // 엔터키 입력 감지
-        document.getElementById('pass-input').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                checkPassword();
-            }
-        });
+        function flipPage() {
+            const intro = document.getElementById('intro-layer');
+            intro.classList.add('page-turned');
+            setTimeout(() => {
+                intro.style.display = 'none';
+            }, 1500);
+        }
 
-        // 스마트 독 토글
+        document.getElementById('pass-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') checkPassword();
+        });
+        
         const smartDock = document.getElementById('smart-dock');
         function toggleDock() { smartDock.classList.toggle('expanded'); }
 
-
         // ==========================================
-        // 2. 15-LAYER SHADER CODE (Original)
+        // 2. 15-LAYER SHADER CODE
         // ==========================================
         const vertShader = `attribute vec3 aPosition; attribute vec2 aTexCoord; varying vec2 vTexCoord; void main() { vTexCoord = aTexCoord; vec4 positionVec4 = vec4(aPosition, 1.0); positionVec4.xy = positionVec4.xy * 2.0 - 1.0; gl_Position = positionVec4; }`;
 
@@ -439,4 +454,3 @@
     </script>
 </body>
 </html>
-
