@@ -57,7 +57,8 @@
             z-index: 9999; background-color: #000;
             display: none; justify-content: center; align-items: center;
         }
-        #intro-overlay.active { display: flex; animation: fadeOutOverlay 1s ease-in-out 10.5s forwards; }
+        #intro-overlay.active { display: flex; animation: fadeOutOverlay 2s ease-in-out 10.5s forwards; }
+        
         .intro-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-image: url('intro.png'); background-size: cover; background-position: center;
@@ -81,14 +82,18 @@
         @media (max-width: 768px) { .typewriter { font-size: 1.5rem; } }
 
         /* =========================================
-           4. 메인 UI
+           4. 메인 UI (Start Screen)
            ========================================= */
         #canvas-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
+        
         #start-screen {
-            pointer-events: auto; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 5, 10, 0.95); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 50;
-            transition: opacity 0.8s;
+            opacity: 0; transition: opacity 2s ease;
         }
+        #start-screen.show { opacity: 1; pointer-events: auto; }
+
         .title-text { font-size: 4em; font-weight: 900; letter-spacing: 5px; color: #0f0; text-shadow: 0 0 30px #0f0; margin-bottom: 0; }
         .sub-title { font-size: 1em; letter-spacing: 8px; color: #fff; animation: blink 2s infinite; text-transform: lowercase; margin-top: 10px; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
@@ -99,8 +104,10 @@
         }
         .start-btn.active { opacity: 1; pointer-events: auto; box-shadow: 0 0 50px #0f0; background: #000; border-color: #fff; }
         .start-btn:hover { background: #0f0; color: #000; }
+        
         #progress-bar-container { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.1); z-index: 15; }
         #progress-bar { width: 0%; height: 100%; background: #0f0; box-shadow: 0 0 10px #0f0; transition: width 0.1s linear; }
+        
         #smart-dock {
             position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
             width: 60px; height: 60px; background: rgba(0, 10, 0, 0.9);
@@ -119,6 +126,8 @@
         .control-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         button.cyber-btn { background: transparent; border: 1px solid #0f0; color: #0f0; padding: 8px 16px; font-size: 14px; font-weight: bold; cursor: pointer; border-radius: 4px; }
         button.cyber-btn:hover { background: #0f0; color: #000; }
+        
+        /* [수정됨] 볼륨 슬라이더 스타일 */
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type=range]:focus { outline: none; }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%; background: #0f0; margin-top: -5px; cursor: pointer; box-shadow: 0 0 10px #0f0; }
@@ -131,7 +140,7 @@
     <div id="login-screen">
         <div class="login-bg"></div>
         <div class="login-box">
-            <div class="login-title">SYSTEM LOGIN</div>
+            <div class="login-title">system login</div>
             <input type="password" id="pass-input" placeholder="PASSWORD">
             <button id="login-btn">WHASSUP</button>
             <div id="login-msg"></div>
@@ -149,7 +158,7 @@
     <div id="canvas-container"></div>
     
     <div id="start-screen">
-        <h1 class="title-text">HOMIE</h1>
+        <h1 class="title-text">homie</h1>
         <p class="sub-title">welcome to ozcastle</p>
         <button id="enter-btn" class="start-btn">LOADING SYSTEM...</button>
         <p id="status-text" style="margin-top:20px; color:#444; font-size: 0.8em;">INITIALIZING 15 LAYERS...</p>
@@ -168,7 +177,7 @@
             </div>
             <div class="control-row">
                 <span class="label">VOL</span>
-                <input type="range" id="vol-slider" min="0" max="1" step="0.01" value="0.8">
+                <input type="range" id="vol-slider" min="0" max="3.0" step="0.01" value="1.5">
             </div>
             <div class="control-row">
                 <span class="label">SEEK</span>
@@ -179,10 +188,11 @@
 
     <script>
         // ==========================================
-        // 로그인 로직 (새로고침 시 항상 리셋)
+        // 로그인 로직
         // ==========================================
         const loginScreen = document.getElementById('login-screen');
         const introOverlay = document.getElementById('intro-overlay');
+        const startScreen = document.getElementById('start-screen');
         const passInput = document.getElementById('pass-input');
         const loginBtn = document.getElementById('login-btn');
         const loginMsg = document.getElementById('login-msg');
@@ -194,11 +204,17 @@
             if (password === "0202") { 
                 loginMsg.innerText = "CMON~";
                 loginMsg.className = "msg-success";
+                
                 setTimeout(() => {
                     loginScreen.style.opacity = 0;
                     setTimeout(() => {
                         loginScreen.style.display = 'none';
-                        introOverlay.classList.add('active');
+                        introOverlay.classList.add('active'); // 인트로 시작
+                        
+                        setTimeout(() => {
+                            startScreen.classList.add('show');
+                        }, 10000); 
+
                     }, 1000);
                 }, 800);
             } else {
@@ -216,16 +232,13 @@
 
 
         // ==========================================
-        // 메인 로직 (Visualizer)
+        // 메인 로직
         // ==========================================
         const smartDock = document.getElementById('smart-dock');
         function toggleDock() { smartDock.classList.toggle('expanded'); }
 
         const vertShader = `attribute vec3 aPosition; attribute vec2 aTexCoord; varying vec2 vTexCoord; void main() { vTexCoord = aTexCoord; vec4 positionVec4 = vec4(aPosition, 1.0); positionVec4.xy = positionVec4.xy * 2.0 - 1.0; gl_Position = positionVec4; }`;
 
-        // ==========================================
-        // [수정됨] 쉐이더: 90% 시작 ~ 97% 종료
-        // ==========================================
         const fragShader = `
             #ifdef GL_ES
             precision mediump float;
@@ -242,21 +255,19 @@
                 vec2 uv = vTexCoord;
                 float phase2 = smoothstep(0.2, 0.3, u_progress); float phase3 = smoothstep(0.5, 0.6, u_progress); float phase4 = smoothstep(0.8, 0.85, u_progress);
                 
-                // [NEW] Climax Trigger: 90% ~ 97% (Adjusted)
-                // 0.90에서 서서히 시작하고, 0.97에서 서서히 사라짐
+                // Climax Trigger: 90% ~ 97%
                 float climaxTrigger = smoothstep(0.90, 0.93, u_progress) * (1.0 - smoothstep(0.97, 0.98, u_progress));
 
                 float glitchBase = u_bass * (0.1 + phase3 * 0.3 + phase4 * 0.5); 
                 float shake = (random(vec2(u_time)) - 0.5) * glitchBase; 
                 
-                // [NEW] Global Screen Shake Effect at Climax (90% start)
+                // Global Screen Shake Effect at Climax (90% start)
                 float heavyShake = (random(vec2(u_time * 10.0)) - 0.5) * 0.15 * climaxTrigger * u_bass;
                 
                 uv.x += step(0.95, sin(uv.y * 40.0 + u_time * 15.0)) * glitchBase * 0.4; 
                 uv.x += shake;
-                uv += heavyShake; // Apply Global Shake
+                uv += heavyShake; 
 
-                // L1 ~ L3
                 float fog = noise(uv * 3.0 + u_time * 0.2); vec3 col1 = vec3(0.0, 0.15 + sin(u_time)*0.05, 0.05) * fog;
                 vec3 col11 = (vec3(0.0, 0.05, 0.2) + vec3(sin(u_time*0.5)*0.02)) * (1.0 - length(vTexCoord - 0.5));
                 float rain = step(0.9, random(vec2(floor(uv.x * 60.0), floor(uv.y * 15.0 + u_time * 8.0)))); vec3 col4 = vec3(0.0, 0.9, 0.0) * rain * 0.4;
@@ -272,7 +283,6 @@
                 vec2 centerUV = vTexCoord - 0.5; float angle = u_time * 0.5; float s = sin(angle); float c = cos(angle); vec2 rotUV = vec2(centerUV.x * c - centerUV.y * s, centerUV.x * s + centerUV.y * c); float crosshair = (step(0.995, 1.0 - abs(rotUV.x)) + step(0.995, 1.0 - abs(rotUV.y))) * step(dist, 0.4); vec3 col8 = vec3(0.8, 1.0, 0.8) * crosshair * 0.8 * phase3;
                 float checker = step(0.5, fract(uv.x * 10.0 + u_time)) * step(0.5, fract(uv.y * 10.0)); vec3 col12 = vec3(1.0) * checker * step(0.7, u_bass) * 0.5 * phase3;
 
-                // L4 (Phase 4)
                 float wave = sin(dist * 40.0 - u_time * 15.0); 
                 vec3 col3 = vec3(0.5, 1.0, 0.5) * smoothstep(0.9, 0.95, abs(wave)) * u_bass * phase4;
                 float angleV = atan(centerUV.y, centerUV.x); float spiral = sin(angleV * 10.0 + dist * 20.0 - u_time * 10.0); vec3 col15 = vec3(0.2, 0.0, 0.5) * smoothstep(0.2, 0.8, spiral) * u_treble * phase4;
@@ -280,7 +290,7 @@
 
                 vec3 finalColor = col1 + col11 + col4 + col5 + col2 + col6 + col13 + col9 + col14 + col7 + col8 + col12 + col3 + col15 + col10;
                 
-                // [NEW] Rainbow Overload with Cut-off (90% ~ 97%)
+                // Rainbow Overload with Cut-off (90% ~ 97%)
                 if(climaxTrigger > 0.0) {
                     vec3 changingColor = 0.5 + 0.5 * cos(u_time * 5.0 + uv.xyx * 3.0 + vec3(0, 2, 4));
                     finalColor = mix(finalColor, finalColor * changingColor * 4.0, climaxTrigger * 0.8 * (0.5 + u_bass));
@@ -376,6 +386,8 @@
                     document.getElementById('smart-dock').style.display = 'block'; 
                 }, 800);
                 song.play();
+                // [수정됨] 시작 시 볼륨을 슬라이더 값(1.5)으로 즉시 적용
+                song.setVolume(parseFloat(volSlider.value));
                 isPlaying = true;
             }
         });
