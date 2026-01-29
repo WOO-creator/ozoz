@@ -12,183 +12,817 @@
         /* =========================================
            1. 공통 기본 설정
            ========================================= */
-        body { margin: 0; padding: 0; background-color: #000; overflow: hidden; font-family: 'Courier New', Courier, monospace; color: #0f0; }
+        * {
+            box-sizing: border-box;
+        }
+        
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background-color: #000; 
+            overflow: hidden; 
+            font-family: 'Courier New', Courier, monospace; 
+            color: #0f0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
         /* =========================================
            2. 로그인 화면
            ========================================= */
         #login-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 20000; background-color: #000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            z-index: 20000; 
+            background-color: #000;
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center;
             transition: opacity 1s ease;
         }
+        
         .login-bg {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('intro.png'); background-size: cover; background-position: center;
-            opacity: 0.3; filter: blur(5px) grayscale(50%); z-index: -1;
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background-image: url('intro.png'); 
+            background-size: cover; 
+            background-position: center;
+            opacity: 0.3; 
+            filter: blur(5px) grayscale(50%); 
+            z-index: -1;
         }
+        
         .login-box {
-            background: rgba(0, 0, 0, 0.8); border: 2px solid #0f0; padding: 40px;
-            border-radius: 10px; text-align: center; box-shadow: 0 0 30px rgba(0, 255, 0, 0.3); width: 300px;
+            background: rgba(0, 0, 0, 0.85); 
+            border: 2px solid #0f0; 
+            padding: 40px;
+            border-radius: 10px; 
+            text-align: center; 
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.5); 
+            width: 90%;
+            max-width: 340px;
+            backdrop-filter: blur(10px);
         }
-        .login-title { font-size: 1.5rem; margin-bottom: 20px; text-shadow: 0 0 10px #0f0; }
+        
+        .login-title { 
+            font-size: 1.8rem; 
+            margin-bottom: 25px; 
+            text-shadow: 0 0 15px #0f0, 0 0 30px #0f0; 
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        
         input[type="password"] {
-            background: transparent; border: none; border-bottom: 2px solid #0f0;
-            color: #fff; font-size: 1.2rem; text-align: center; width: 80%;
-            font-family: 'Courier New', Courier, monospace; outline: none; margin-bottom: 20px;
+            background: transparent; 
+            border: none; 
+            border-bottom: 2px solid #0f0;
+            color: #fff; 
+            font-size: 1.3rem; 
+            text-align: center; 
+            width: 100%;
+            font-family: 'Courier New', Courier, monospace; 
+            outline: none; 
+            margin-bottom: 25px;
+            padding: 10px 0;
+            transition: border-color 0.3s;
         }
+        
+        input[type="password"]:focus {
+            border-bottom-color: #0ff;
+        }
+        
         #login-btn {
-            background: #0f0; color: #000; border: none; padding: 10px 20px;
-            font-size: 1.2rem; font-weight: bold; cursor: pointer;
-            font-family: 'Courier New', Courier, monospace; transition: 0.2s; width: 100%;
+            background: #0f0; 
+            color: #000; 
+            border: none; 
+            padding: 12px 30px;
+            font-size: 1.2rem; 
+            font-weight: bold; 
+            cursor: pointer;
+            font-family: 'Courier New', Courier, monospace; 
+            transition: all 0.3s; 
+            width: 100%;
+            border-radius: 5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
-        #login-btn:hover { background: #fff; box-shadow: 0 0 15px #fff; }
-        #login-msg { margin-top: 15px; font-size: 1.2rem; font-weight: bold; height: 20px; }
-        .msg-success { color: #0ff; text-shadow: 0 0 10px #0ff; }
-        .msg-fail { color: #f00; text-shadow: 0 0 10px #f00; animation: shake 0.3s; }
-        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
+        
+        #login-btn:hover { 
+            background: #fff; 
+            box-shadow: 0 0 25px #fff, 0 0 50px #0f0;
+            transform: translateY(-2px);
+        }
+        
+        #login-btn:active {
+            transform: translateY(0);
+        }
+        
+        #login-msg { 
+            margin-top: 20px; 
+            font-size: 1.2rem; 
+            font-weight: bold; 
+            min-height: 30px;
+            letter-spacing: 1px;
+        }
+        
+        .msg-success { 
+            color: #0ff; 
+            text-shadow: 0 0 15px #0ff, 0 0 30px #0ff; 
+            animation: pulse 0.5s ease-in-out;
+        }
+        
+        .msg-fail { 
+            color: #f00; 
+            text-shadow: 0 0 15px #f00, 0 0 30px #f00; 
+            animation: shake 0.5s; 
+        }
+        
+        @keyframes shake { 
+            0%, 100% { transform: translateX(0); } 
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); } 
+            20%, 40%, 60%, 80% { transform: translateX(8px); } 
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
 
         /* =========================================
            3. 인트로 화면
            ========================================= */
         #intro-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 9999; background-color: #000;
-            display: none; justify-content: center; align-items: center;
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            z-index: 9999; 
+            background-color: #000;
+            display: none; 
+            justify-content: center; 
+            align-items: center;
         }
-        #intro-overlay.active { display: flex; animation: fadeOutOverlay 2s ease-in-out 10.5s forwards; }
+        
+        #intro-overlay.active { 
+            display: flex; 
+            animation: fadeOutOverlay 2s ease-in-out 10.5s forwards; 
+        }
         
         .intro-bg {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('intro.png'); background-size: cover; background-position: center;
-            filter: brightness(0.4) blur(10px); transform: scale(1.2); opacity: 0;
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background-image: url('intro.png'); 
+            background-size: cover; 
+            background-position: center;
+            filter: brightness(0.3) blur(15px); 
+            transform: scale(1.3); 
+            opacity: 0;
         }
-        #intro-overlay.active .intro-bg { opacity: 1; animation: revealBackground 4s ease-in-out 3.5s forwards; }
-        .intro-content { position: relative; z-index: 10; text-align: center; }
+        
+        #intro-overlay.active .intro-bg { 
+            opacity: 1; 
+            animation: revealBackground 4s ease-in-out 3.5s forwards; 
+        }
+        
+        .intro-content { 
+            position: relative; 
+            z-index: 10; 
+            text-align: center; 
+        }
+        
         .typewriter {
-            font-family: 'Courier New', Courier, monospace; color: #f0e68c;
-            font-size: 2.5rem; font-weight: bold; white-space: nowrap; overflow: hidden;
-            border-right: 3px solid #f0e68c; width: 0;
+            font-family: 'Courier New', Courier, monospace; 
+            color: #f0e68c;
+            font-size: 2.8rem; 
+            font-weight: bold; 
+            white-space: nowrap; 
+            overflow: hidden;
+            border-right: 4px solid #f0e68c; 
+            width: 0;
+            letter-spacing: 2px;
         }
+        
         #intro-overlay.active .typewriter {
-            animation: typing 3s steps(22) forwards, blinkCursor 0.7s step-end infinite, fadeOutText 0.5s ease-in-out 4.5s forwards;
+            animation: 
+                typing 3s steps(22) forwards, 
+                blinkCursor 0.7s step-end infinite, 
+                fadeOutText 0.5s ease-in-out 4.5s forwards;
         }
-        @keyframes typing { from { width: 0; } to { width: 100%; } }
-        @keyframes blinkCursor { from, to { border-color: transparent; } 50% { border-color: #f0e68c; } }
-        @keyframes revealBackground { to { filter: brightness(1) blur(0); transform: scale(1); } }
-        @keyframes fadeOutText { to { opacity: 0; } }
-        @keyframes fadeOutOverlay { to { opacity: 0; visibility: hidden; } }
-        @media (max-width: 768px) { .typewriter { font-size: 1.5rem; } }
+        
+        @keyframes typing { 
+            from { width: 0; } 
+            to { width: 100%; } 
+        }
+        
+        @keyframes blinkCursor { 
+            from, to { border-color: transparent; } 
+            50% { border-color: #f0e68c; } 
+        }
+        
+        @keyframes revealBackground { 
+            to { 
+                filter: brightness(0.8) blur(3px); 
+                transform: scale(1.05); 
+            } 
+        }
+        
+        @keyframes fadeOutText { 
+            to { opacity: 0; } 
+        }
+        
+        @keyframes fadeOutOverlay { 
+            to { 
+                opacity: 0; 
+                visibility: hidden; 
+            } 
+        }
 
         /* =========================================
            4. 메인 UI (Start Screen)
            ========================================= */
-        #canvas-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
+        #canvas-container { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            z-index: 0; 
+        }
         
         #start-screen {
             pointer-events: none;
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 5, 10, 0.95); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 50;
-            opacity: 0; transition: opacity 2s ease;
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: radial-gradient(ellipse at center, rgba(0, 10, 15, 0.92) 0%, rgba(0, 5, 10, 0.98) 100%);
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 50;
+            opacity: 0; 
+            transition: opacity 2.5s ease;
+            backdrop-filter: blur(5px);
         }
-        #start-screen.show { opacity: 1; pointer-events: auto; }
+        
+        #start-screen.show { 
+            opacity: 1; 
+            pointer-events: auto; 
+        }
 
-        .title-text { font-size: 4em; font-weight: 900; letter-spacing: 5px; color: #0f0; text-shadow: 0 0 30px #0f0; margin-bottom: 0; }
-        .sub-title { font-size: 1em; letter-spacing: 8px; color: #fff; animation: blink 2s infinite; text-transform: lowercase; margin-top: 10px; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .title-text { 
+            font-size: clamp(2.5em, 8vw, 5em); 
+            font-weight: 900; 
+            letter-spacing: 8px; 
+            color: #0f0; 
+            text-shadow: 
+                0 0 20px #0f0,
+                0 0 40px #0f0,
+                0 0 60px #0f0,
+                0 0 80px rgba(0, 255, 0, 0.5); 
+            margin-bottom: 0;
+            animation: titleGlow 3s ease-in-out infinite;
+            text-transform: uppercase;
+        }
+        
+        @keyframes titleGlow {
+            0%, 100% { 
+                text-shadow: 
+                    0 0 20px #0f0,
+                    0 0 40px #0f0,
+                    0 0 60px #0f0,
+                    0 0 80px rgba(0, 255, 0, 0.5);
+            }
+            50% { 
+                text-shadow: 
+                    0 0 30px #0f0,
+                    0 0 60px #0f0,
+                    0 0 90px #0f0,
+                    0 0 120px rgba(0, 255, 0, 0.7);
+            }
+        }
+        
+        .sub-title { 
+            font-size: clamp(0.9em, 2vw, 1.2em); 
+            letter-spacing: 10px; 
+            color: #fff; 
+            animation: blink 2.5s infinite; 
+            text-transform: lowercase; 
+            margin-top: 15px;
+            opacity: 0.9;
+        }
+        
+        @keyframes blink { 
+            0%, 100% { opacity: 1; } 
+            50% { opacity: 0.4; } 
+        }
+        
         .start-btn {
-            margin-top: 50px; border: 2px solid #0f0; background: rgba(0, 20, 0, 0.6); padding: 15px 40px;
-            font-size: 1.2em; font-weight: bold; color: #0f0; cursor: pointer; text-transform: uppercase;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2); transition: 0.3s; opacity: 0.5; pointer-events: none; border-radius: 30px;
+            margin-top: 60px; 
+            border: 3px solid #0f0; 
+            background: rgba(0, 20, 0, 0.7); 
+            padding: 18px 50px;
+            font-size: clamp(1em, 2.5vw, 1.3em); 
+            font-weight: bold; 
+            color: #0f0; 
+            cursor: pointer; 
+            text-transform: uppercase;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 0, 0.3),
+                inset 0 0 20px rgba(0, 255, 0, 0.1); 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            opacity: 0.5; 
+            pointer-events: none; 
+            border-radius: 35px;
+            letter-spacing: 3px;
+            position: relative;
+            overflow: hidden;
         }
-        .start-btn.active { opacity: 1; pointer-events: auto; box-shadow: 0 0 50px #0f0; background: #000; border-color: #fff; }
-        .start-btn:hover { background: #0f0; color: #000; }
         
-        #progress-bar-container { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.1); z-index: 15; }
-        #progress-bar { width: 0%; height: 100%; background: #0f0; box-shadow: 0 0 10px #0f0; transition: width 0.1s linear; }
+        .start-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(0, 255, 0, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
         
+        .start-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .start-btn.active { 
+            opacity: 1; 
+            pointer-events: auto; 
+            box-shadow: 
+                0 0 40px #0f0,
+                0 0 60px rgba(0, 255, 0, 0.5),
+                inset 0 0 30px rgba(0, 255, 0, 0.2); 
+            background: rgba(0, 30, 0, 0.8); 
+            border-color: #fff;
+            animation: btnPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes btnPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .start-btn:hover { 
+            background: #0f0; 
+            color: #000;
+            transform: scale(1.08);
+            box-shadow: 
+                0 0 50px #0f0,
+                0 0 80px rgba(0, 255, 0, 0.7);
+        }
+        
+        .start-btn:active {
+            transform: scale(0.98);
+        }
+        
+        #status-text {
+            margin-top: 25px; 
+            color: #444; 
+            font-size: clamp(0.7em, 1.5vw, 0.9em);
+            letter-spacing: 2px;
+            transition: color 0.5s;
+        }
+        
+        #progress-bar-container { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 5px; 
+            background: rgba(255,255,255,0.05); 
+            z-index: 15;
+            overflow: hidden;
+        }
+        
+        #progress-bar { 
+            width: 0%; 
+            height: 100%; 
+            background: linear-gradient(90deg, #0f0, #0ff); 
+            box-shadow: 
+                0 0 15px #0f0,
+                0 0 30px rgba(0, 255, 0, 0.5); 
+            transition: width 0.1s linear;
+            position: relative;
+        }
+        
+        #progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4));
+            animation: progressShine 2s ease-in-out infinite;
+        }
+        
+        @keyframes progressShine {
+            0% { transform: translateX(-100px); }
+            100% { transform: translateX(100px); }
+        }
+        
+        /* =========================================
+           5. Smart Dock
+           ========================================= */
         #smart-dock {
-            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 60px; height: 60px; background: rgba(0, 10, 0, 0.9);
-            border: 2px solid #0f0; border-radius: 50px; box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
-            overflow: hidden; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 20;
-            display: none; backdrop-filter: blur(10px);
+            position: absolute; 
+            bottom: 30px; 
+            left: 50%; 
+            transform: translateX(-50%);
+            width: 65px; 
+            height: 65px; 
+            background: rgba(0, 15, 0, 0.92);
+            border: 2px solid #0f0; 
+            border-radius: 50px; 
+            box-shadow: 
+                0 0 25px rgba(0, 255, 0, 0.5),
+                inset 0 0 15px rgba(0, 255, 0, 0.1);
+            overflow: hidden; 
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
+            z-index: 100;
+            display: none; 
+            backdrop-filter: blur(15px);
         }
-        #smart-dock.expanded { width: 400px; height: 180px; border-radius: 20px; border-color: #fff; box-shadow: 0 0 50px rgba(0, 255, 0, 0.2); }
-        #dock-toggle { position: absolute; bottom: 0; left: 0; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 22; font-size: 24px; }
-        #dock-icon { transition: 0.3s; }
-        #smart-dock.expanded #dock-icon { opacity: 0; }
-        #controls-inner { position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
-        #smart-dock.expanded #controls-inner { opacity: 1; pointer-events: auto; transition-delay: 0.1s; }
-        #close-btn { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; color: #666; transition: 0.2s; }
-        #close-btn:hover { color: #fff; }
-        .control-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        button.cyber-btn { background: transparent; border: 1px solid #0f0; color: #0f0; padding: 8px 16px; font-size: 14px; font-weight: bold; cursor: pointer; border-radius: 4px; }
-        button.cyber-btn:hover { background: #0f0; color: #000; }
         
-        /* [수정됨] 볼륨 슬라이더 스타일 */
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type=range]:focus { outline: none; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%; background: #0f0; margin-top: -5px; cursor: pointer; box-shadow: 0 0 10px #0f0; }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 2px; background: #333; }
-        .label { font-size: 12px; color: #888; margin-right: 10px; }
+        #smart-dock.expanded { 
+            width: min(450px, 90vw); 
+            height: 200px; 
+            border-radius: 25px; 
+            border-color: #0ff; 
+            box-shadow: 
+                0 0 60px rgba(0, 255, 255, 0.4),
+                0 10px 40px rgba(0, 0, 0, 0.5),
+                inset 0 0 30px rgba(0, 255, 255, 0.1);
+        }
+        
+        #dock-toggle { 
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 65px; 
+            height: 65px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            cursor: pointer; 
+            z-index: 102; 
+            font-size: 28px;
+            transition: transform 0.3s;
+        }
+        
+        #dock-toggle:hover {
+            transform: scale(1.15);
+        }
+        
+        #dock-icon { 
+            transition: all 0.4s;
+            filter: drop-shadow(0 0 5px #0f0);
+        }
+        
+        #smart-dock.expanded #dock-icon { 
+            opacity: 0;
+            transform: rotate(180deg);
+        }
+        
+        #controls-inner { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            padding: 25px; 
+            box-sizing: border-box; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            opacity: 0; 
+            transition: opacity 0.3s; 
+            pointer-events: none;
+        }
+        
+        #smart-dock.expanded #controls-inner { 
+            opacity: 1; 
+            pointer-events: auto; 
+            transition-delay: 0.2s;
+        }
+        
+        #close-btn { 
+            position: absolute; 
+            top: 12px; 
+            right: 18px; 
+            font-size: 24px; 
+            cursor: pointer; 
+            color: #666; 
+            transition: all 0.3s;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        #close-btn:hover { 
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(90deg);
+        }
+        
+        .control-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 18px;
+            gap: 15px;
+        }
+        
+        button.cyber-btn { 
+            background: transparent; 
+            border: 2px solid #0f0; 
+            color: #0f0; 
+            padding: 10px 20px; 
+            font-size: 14px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            border-radius: 6px;
+            font-family: 'Courier New', Courier, monospace;
+            transition: all 0.3s;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button.cyber-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: #0f0;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s, height 0.4s;
+            z-index: -1;
+        }
+        
+        button.cyber-btn:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+        
+        button.cyber-btn:hover { 
+            color: #000;
+            box-shadow: 0 0 20px #0f0;
+            transform: translateY(-2px);
+        }
+        
+        button.cyber-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* 볼륨/시크 슬라이더 */
+        input[type=range] { 
+            -webkit-appearance: none; 
+            width: 100%; 
+            background: transparent;
+            cursor: pointer;
+        }
+        
+        input[type=range]:focus { 
+            outline: none; 
+        }
+        
+        input[type=range]::-webkit-slider-thumb { 
+            -webkit-appearance: none; 
+            height: 16px; 
+            width: 16px; 
+            border-radius: 50%; 
+            background: #0f0; 
+            margin-top: -7px; 
+            cursor: pointer; 
+            box-shadow: 
+                0 0 15px #0f0,
+                0 0 25px rgba(0, 255, 0, 0.5);
+            transition: all 0.2s;
+        }
+        
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.3);
+            box-shadow: 
+                0 0 20px #0f0,
+                0 0 35px rgba(0, 255, 0, 0.7);
+        }
+        
+        input[type=range]::-webkit-slider-runnable-track { 
+            width: 100%; 
+            height: 3px; 
+            background: linear-gradient(90deg, #0f0, #0ff);
+            border-radius: 2px;
+            box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+        }
+        
+        input[type=range]::-moz-range-thumb {
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #0f0;
+            cursor: pointer;
+            border: none;
+            box-shadow: 
+                0 0 15px #0f0,
+                0 0 25px rgba(0, 255, 0, 0.5);
+        }
+        
+        input[type=range]::-moz-range-track {
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #0f0, #0ff);
+            border-radius: 2px;
+        }
+        
+        .label { 
+            font-size: 13px; 
+            color: #999; 
+            min-width: 40px;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+        
+        #current-time {
+            font-size: 15px;
+            color: #0ff;
+            font-weight: bold;
+            min-width: 50px;
+            text-align: right;
+            text-shadow: 0 0 10px #0ff;
+        }
+        
+        /* =========================================
+           6. 반응형 미디어 쿼리
+           ========================================= */
+        @media (max-width: 768px) { 
+            .typewriter { 
+                font-size: 1.8rem; 
+            }
+            
+            .login-box {
+                padding: 30px;
+            }
+            
+            .login-title {
+                font-size: 1.5rem;
+            }
+            
+            input[type="password"] {
+                font-size: 1.1rem;
+            }
+            
+            .title-text {
+                letter-spacing: 4px;
+            }
+            
+            .sub-title {
+                letter-spacing: 6px;
+            }
+            
+            #smart-dock.expanded {
+                bottom: 20px;
+                height: 220px;
+            }
+            
+            .control-row {
+                flex-direction: column;
+                align-items: stretch;
+                margin-bottom: 12px;
+            }
+            
+            #play-btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .typewriter {
+                font-size: 1.4rem;
+            }
+            
+            .start-btn {
+                padding: 15px 35px;
+            }
+        }
+        
+        /* =========================================
+           7. 로딩 애니메이션
+           ========================================= */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 255, 0, 0.3);
+            border-top-color: #0f0;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
 
+    <!-- 로그인 화면 -->
     <div id="login-screen">
         <div class="login-bg"></div>
         <div class="login-box">
             <div class="login-title">system login</div>
-            <input type="password" id="pass-input" placeholder="PASSWORD">
+            <input type="password" id="pass-input" placeholder="PASSWORD" autocomplete="off" aria-label="Password input">
             <button id="login-btn">WHASSUP</button>
-            <div id="login-msg"></div>
+            <div id="login-msg" role="alert" aria-live="polite"></div>
         </div>
     </div>
 
-    <div id="intro-overlay">
+    <!-- 인트로 오버레이 -->
+    <div id="intro-overlay" role="presentation">
         <div class="intro-bg"></div>
         <div class="intro-content">
             <h1 class="typewriter">welcome to ozcastle...</h1>
         </div>
     </div>
 
-    <div id="progress-bar-container"><div id="progress-bar"></div></div>
+    <!-- 프로그레스 바 -->
+    <div id="progress-bar-container" role="progressbar" aria-label="Playback progress">
+        <div id="progress-bar"></div>
+    </div>
+    
+    <!-- 캔버스 컨테이너 -->
     <div id="canvas-container"></div>
     
+    <!-- 시작 화면 -->
     <div id="start-screen">
         <h1 class="title-text">homie</h1>
         <p class="sub-title">welcome to ozcastle</p>
-        <button id="enter-btn" class="start-btn">LOADING SYSTEM...</button>
-        <p id="status-text" style="margin-top:20px; color:#444; font-size: 0.8em;">INITIALIZING 15 LAYERS...</p>
+        <button id="enter-btn" class="start-btn" aria-label="Start experience">
+            LOADING SYSTEM...
+        </button>
+        <p id="status-text">INITIALIZING 15 LAYERS...</p>
     </div>
 
-    <div id="smart-dock">
-        <div id="dock-toggle" onclick="toggleDock()">
+    <!-- Smart Dock 컨트롤 -->
+    <div id="smart-dock" role="region" aria-label="Audio controls">
+        <div id="dock-toggle" onclick="toggleDock()" role="button" aria-label="Toggle controls" tabindex="0">
             <span id="dock-icon">🎛️</span>
         </div>
         <div id="controls-inner">
-            <div id="close-btn" onclick="toggleDock()">✕</div>
+            <div id="close-btn" onclick="toggleDock()" role="button" aria-label="Close controls" tabindex="0">✕</div>
             
-            <div class="control-row" style="margin-top: 10px;">
-                <button id="play-btn" class="cyber-btn">|| PAUSE</button>
-                <span id="current-time" style="font-size: 14px; color: #fff;">00:00</span>
+            <div class="control-row">
+                <button id="play-btn" class="cyber-btn" aria-label="Play or pause">|| PAUSE</button>
+                <span id="current-time" aria-label="Current time">00:00</span>
             </div>
             <div class="control-row">
                 <span class="label">VOL</span>
-                <input type="range" id="vol-slider" min="0" max="3.0" step="0.01" value="1.5">
+                <input type="range" id="vol-slider" min="0" max="3.0" step="0.01" value="1.5" aria-label="Volume control">
             </div>
             <div class="control-row">
                 <span class="label">SEEK</span>
-                <input type="range" id="prog-slider" min="0" max="100" value="0" step="0.1">
+                <input type="range" id="prog-slider" min="0" max="100" value="0" step="0.1" aria-label="Seek control">
             </div>
         </div>
     </div>
 
     <script>
         // ==========================================
-        // 로그인 로직
+        // 전역 변수 선언
         // ==========================================
         const loginScreen = document.getElementById('login-screen');
         const introOverlay = document.getElementById('intro-overlay');
@@ -196,21 +830,36 @@
         const passInput = document.getElementById('pass-input');
         const loginBtn = document.getElementById('login-btn');
         const loginMsg = document.getElementById('login-msg');
+        const smartDock = document.getElementById('smart-dock');
+        const enterBtn = document.getElementById('enter-btn');
+        const statusText = document.getElementById('status-text');
+        const playBtn = document.getElementById('play-btn');
+        const volSlider = document.getElementById('vol-slider');
+        const progSlider = document.getElementById('prog-slider');
+        const currentTimeSpan = document.getElementById('current-time');
+        const progressBar = document.getElementById('progress-bar');
 
+        // 세션 스토리지 초기화
         sessionStorage.removeItem('oz_access');
 
+        // ==========================================
+        // 로그인 로직
+        // ==========================================
         function tryLogin() {
-            const password = passInput.value;
+            const password = passInput.value.trim();
+            
             if (password === "0202") { 
                 loginMsg.innerText = "CMON~";
                 loginMsg.className = "msg-success";
+                loginBtn.disabled = true;
                 
                 setTimeout(() => {
                     loginScreen.style.opacity = 0;
                     setTimeout(() => {
                         loginScreen.style.display = 'none';
-                        introOverlay.classList.add('active'); // 인트로 시작
+                        introOverlay.classList.add('active');
                         
+                        // 인트로 후 메인 화면 표시
                         setTimeout(() => {
                             startScreen.classList.add('show');
                         }, 10000); 
@@ -222,6 +871,12 @@
                 loginMsg.className = "msg-fail";
                 passInput.value = "";
                 passInput.focus();
+                
+                // 메시지 자동 제거
+                setTimeout(() => {
+                    loginMsg.innerText = "";
+                    loginMsg.className = "";
+                }, 2000);
             }
         }
 
@@ -230,106 +885,242 @@
             if (e.key === 'Enter') tryLogin();
         });
 
+        // 페이지 로드 시 비밀번호 입력란에 포커스
+        window.addEventListener('load', () => {
+            passInput.focus();
+        });
 
         // ==========================================
-        // 메인 로직
+        // Smart Dock 토글
         // ==========================================
-        const smartDock = document.getElementById('smart-dock');
-        function toggleDock() { smartDock.classList.toggle('expanded'); }
+        function toggleDock() { 
+            smartDock.classList.toggle('expanded'); 
+        }
 
-        const vertShader = `attribute vec3 aPosition; attribute vec2 aTexCoord; varying vec2 vTexCoord; void main() { vTexCoord = aTexCoord; vec4 positionVec4 = vec4(aPosition, 1.0); positionVec4.xy = positionVec4.xy * 2.0 - 1.0; gl_Position = positionVec4; }`;
+        // 키보드로 닫기 버튼 작동
+        document.getElementById('close-btn').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleDock();
+            }
+        });
+
+        document.getElementById('dock-toggle').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleDock();
+            }
+        });
+
+        // ==========================================
+        // 셰이더 코드
+        // ==========================================
+        const vertShader = `
+            attribute vec3 aPosition; 
+            attribute vec2 aTexCoord; 
+            varying vec2 vTexCoord; 
+            
+            void main() { 
+                vTexCoord = aTexCoord; 
+                vec4 positionVec4 = vec4(aPosition, 1.0); 
+                positionVec4.xy = positionVec4.xy * 2.0 - 1.0; 
+                gl_Position = positionVec4; 
+            }
+        `;
 
         const fragShader = `
             #ifdef GL_ES
-            precision mediump float;
+            precision highp float;
             #endif
-            varying vec2 vTexCoord; uniform float u_time; uniform float u_bass; uniform float u_mid; uniform float u_treble; uniform float u_progress;
             
-            mat2 rotate2d(float _angle){ return mat2(cos(_angle),-sin(_angle), sin(_angle),cos(_angle)); }
-            float random (vec2 st) { return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123); }
-            float noise (in vec2 st) { vec2 i = floor(st); vec2 f = fract(st); float a = random(i); float b = random(i + vec2(1.0, 0.0)); float c = random(i + vec2(0.0, 1.0)); float d = random(i + vec2(1.0, 1.0)); vec2 u = f * f * (3.0 - 2.0 * f); return mix(a, b, u.x) + (c - a)* u.y * (1.0 - u.x) + (d - b) * u.x * u.y; }
-            float hexDist(vec2 p) { p = abs(p); return max(p.x, dot(p, vec2(0.5, 0.866025))); }
-            float triDist(vec2 p) { p = p * 2.0; return max(abs(p.x) * 0.866025 + p.y * 0.5, -p.y * 0.5); }
+            varying vec2 vTexCoord; 
+            uniform float u_time; 
+            uniform float u_bass; 
+            uniform float u_mid; 
+            uniform float u_treble; 
+            uniform float u_progress;
+            
+            // 유틸리티 함수들
+            mat2 rotate2d(float _angle){ 
+                return mat2(cos(_angle), -sin(_angle), sin(_angle), cos(_angle)); 
+            }
+            
+            float random(vec2 st) { 
+                return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123); 
+            }
+            
+            float noise(in vec2 st) { 
+                vec2 i = floor(st); 
+                vec2 f = fract(st); 
+                float a = random(i); 
+                float b = random(i + vec2(1.0, 0.0)); 
+                float c = random(i + vec2(0.0, 1.0)); 
+                float d = random(i + vec2(1.0, 1.0)); 
+                vec2 u = f * f * (3.0 - 2.0 * f); 
+                return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y; 
+            }
+            
+            float hexDist(vec2 p) { 
+                p = abs(p); 
+                return max(p.x, dot(p, vec2(0.5, 0.866025))); 
+            }
+            
+            float triDist(vec2 p) { 
+                p = p * 2.0; 
+                return max(abs(p.x) * 0.866025 + p.y * 0.5, -p.y * 0.5); 
+            }
 
             void main() {
                 vec2 uv = vTexCoord;
-                float phase2 = smoothstep(0.2, 0.3, u_progress); float phase3 = smoothstep(0.5, 0.6, u_progress); float phase4 = smoothstep(0.8, 0.85, u_progress);
                 
-                // Climax Trigger: 90% ~ 97%
-                float climaxTrigger = smoothstep(0.90, 0.93, u_progress) * (1.0 - smoothstep(0.97, 0.98, u_progress));
+                // 프로그레스 기반 페이즈
+                float phase2 = smoothstep(0.15, 0.25, u_progress); 
+                float phase3 = smoothstep(0.45, 0.55, u_progress); 
+                float phase4 = smoothstep(0.75, 0.82, u_progress);
+                
+                // 클라이맥스 트리거 (90% ~ 97%)
+                float climaxTrigger = smoothstep(0.88, 0.91, u_progress) * (1.0 - smoothstep(0.96, 0.98, u_progress));
 
-                float glitchBase = u_bass * (0.1 + phase3 * 0.3 + phase4 * 0.5); 
-                float shake = (random(vec2(u_time)) - 0.5) * glitchBase; 
+                // 글리치 효과
+                float glitchBase = u_bass * (0.12 + phase3 * 0.35 + phase4 * 0.6); 
+                float shake = (random(vec2(u_time * 0.1)) - 0.5) * glitchBase; 
                 
-                // Global Screen Shake Effect at Climax (90% start)
-                float heavyShake = (random(vec2(u_time * 10.0)) - 0.5) * 0.15 * climaxTrigger * u_bass;
+                // 클라이맥스 시 강력한 화면 흔들림
+                float heavyShake = (random(vec2(u_time * 12.0)) - 0.5) * 0.18 * climaxTrigger * u_bass;
                 
-                uv.x += step(0.95, sin(uv.y * 40.0 + u_time * 15.0)) * glitchBase * 0.4; 
+                uv.x += step(0.94, sin(uv.y * 45.0 + u_time * 18.0)) * glitchBase * 0.5; 
                 uv.x += shake;
                 uv += heavyShake; 
 
-                float fog = noise(uv * 3.0 + u_time * 0.2); vec3 col1 = vec3(0.0, 0.15 + sin(u_time)*0.05, 0.05) * fog;
-                vec3 col11 = (vec3(0.0, 0.05, 0.2) + vec3(sin(u_time*0.5)*0.02)) * (1.0 - length(vTexCoord - 0.5));
-                float rain = step(0.9, random(vec2(floor(uv.x * 60.0), floor(uv.y * 15.0 + u_time * 8.0)))); vec3 col4 = vec3(0.0, 0.9, 0.0) * rain * 0.4;
-                vec3 col5 = vec3(random(uv * u_time * 20.0)) * u_treble * 0.3;
+                // === 레이어 1: 베이스 포그 & 비네팅 ===
+                float fog = noise(uv * 3.5 + u_time * 0.25); 
+                vec3 col1 = vec3(0.0, 0.18 + sin(u_time * 0.3) * 0.06, 0.06) * fog;
+                vec3 col11 = (vec3(0.0, 0.06, 0.25) + vec3(sin(u_time * 0.6) * 0.03)) * (1.0 - length(vTexCoord - 0.5));
+                
+                // === 레이어 2: 디지털 레인 ===
+                float rain = step(0.88, random(vec2(floor(uv.x * 65.0), floor(uv.y * 18.0 + u_time * 9.0)))); 
+                vec3 col4 = vec3(0.0, 0.95, 0.0) * rain * 0.5;
+                
+                // === 레이어 3: 노이즈 스태틱 ===
+                vec3 col5 = vec3(random(uv * u_time * 25.0)) * u_treble * 0.35;
 
-                vec2 gridUV = uv; gridUV.y += 0.5; gridUV /= abs(uv.y + 0.2); float grid = step(0.95, fract(gridUV.x * 5.0 + u_time)) + step(0.95, fract(gridUV.y * 5.0)); grid *= smoothstep(0.0, 0.5, abs(uv.y)); vec3 col2 = vec3(0.0, 0.8, 0.2) * grid * u_mid * phase2;
-                vec2 hexUV = uv; hexUV -= 0.5; hexUV = rotate2d(u_time * 0.1) * hexUV; hexUV += 0.5; hexUV = hexUV * 5.0; hexUV.x *= 1.1547; float hex = step(0.4, 0.5 - hexDist(fract(hexUV) - 0.5)); vec3 col6 = vec3(0.0, 0.3, 0.1) * hex * (0.2 + u_bass * 0.5) * phase2;
-                float waveY = uv.y - 0.5; float waveLine = sin(uv.x * 20.0 + u_time * 5.0) * u_bass * 0.2; vec3 col13 = vec3(0.5, 0.8, 1.0) * smoothstep(0.01, 0.0, abs(waveY - waveLine)) * phase2;
-                float dist = length(vTexCoord - 0.5); float breath = sin(u_time * 2.0) * 0.05; vec3 col9 = vec3(0.2, 1.0, 1.0) * smoothstep(0.01, 0.0, abs(dist - (0.3 + u_mid * 0.2 + breath))) * phase2;
+                // === 레이어 4: 퍼스펙티브 그리드 (Phase 2+) ===
+                vec2 gridUV = uv; 
+                gridUV.y += 0.5; 
+                gridUV /= abs(uv.y + 0.25); 
+                float grid = step(0.94, fract(gridUV.x * 6.0 + u_time * 0.5)) + step(0.94, fract(gridUV.y * 6.0)); 
+                grid *= smoothstep(0.0, 0.6, abs(uv.y)); 
+                vec3 col2 = vec3(0.0, 0.85, 0.25) * grid * u_mid * phase2;
+                
+                // === 레이어 5: 회전 헥사곤 (Phase 2+) ===
+                vec2 hexUV = uv; 
+                hexUV -= 0.5; 
+                hexUV = rotate2d(u_time * 0.15) * hexUV; 
+                hexUV += 0.5; 
+                hexUV = hexUV * 5.5; 
+                hexUV.x *= 1.1547; 
+                float hex = step(0.38, 0.5 - hexDist(fract(hexUV) - 0.5)); 
+                vec3 col6 = vec3(0.0, 0.35, 0.12) * hex * (0.25 + u_bass * 0.6) * phase2;
+                
+                // === 레이어 6: 오디오 파형 (Phase 2+) ===
+                float waveY = uv.y - 0.5; 
+                float waveLine = sin(uv.x * 22.0 + u_time * 6.0) * u_bass * 0.25; 
+                vec3 col13 = vec3(0.6, 0.9, 1.0) * smoothstep(0.012, 0.0, abs(waveY - waveLine)) * phase2;
+                
+                // === 레이어 7: 펄싱 링 (Phase 2+) ===
+                float dist = length(vTexCoord - 0.5); 
+                float breath = sin(u_time * 2.5) * 0.06; 
+                vec3 col9 = vec3(0.25, 1.0, 1.0) * smoothstep(0.015, 0.0, abs(dist - (0.32 + u_mid * 0.25 + breath))) * phase2;
 
-                vec2 triPos = uv - 0.5; triPos = rotate2d(u_time * -0.3) * triPos; triPos += 0.5; vec2 triUV = fract(triPos * 4.0) - 0.5; float tri = step(0.3, 0.4 - triDist(triUV)); vec3 triColor = mix(vec3(0.8, 0.0, 0.4), vec3(0.0, 0.8, 0.8), sin(u_time)*0.5+0.5); vec3 col14 = triColor * tri * u_mid * 0.5 * phase3;
-                vec2 blockUV = floor(uv * 10.0); float blockTrigger = step(0.8, random(blockUV + floor(u_time * 10.0))) * step(0.5, u_bass); vec3 col7 = vec3(0.6, 1.0, 0.6) * blockTrigger * 0.6 * phase3;
-                vec2 centerUV = vTexCoord - 0.5; float angle = u_time * 0.5; float s = sin(angle); float c = cos(angle); vec2 rotUV = vec2(centerUV.x * c - centerUV.y * s, centerUV.x * s + centerUV.y * c); float crosshair = (step(0.995, 1.0 - abs(rotUV.x)) + step(0.995, 1.0 - abs(rotUV.y))) * step(dist, 0.4); vec3 col8 = vec3(0.8, 1.0, 0.8) * crosshair * 0.8 * phase3;
-                float checker = step(0.5, fract(uv.x * 10.0 + u_time)) * step(0.5, fract(uv.y * 10.0)); vec3 col12 = vec3(1.0) * checker * step(0.7, u_bass) * 0.5 * phase3;
+                // === 레이어 8: 회전 삼각형 (Phase 3+) ===
+                vec2 triPos = uv - 0.5; 
+                triPos = rotate2d(u_time * -0.35) * triPos; 
+                triPos += 0.5; 
+                vec2 triUV = fract(triPos * 4.5) - 0.5; 
+                float tri = step(0.28, 0.42 - triDist(triUV)); 
+                vec3 triColor = mix(vec3(0.85, 0.0, 0.5), vec3(0.0, 0.85, 0.9), sin(u_time * 0.8) * 0.5 + 0.5); 
+                vec3 col14 = triColor * tri * u_mid * 0.6 * phase3;
+                
+                // === 레이어 9: 글리치 블록 (Phase 3+) ===
+                vec2 blockUV = floor(uv * 12.0); 
+                float blockTrigger = step(0.75, random(blockUV + floor(u_time * 12.0))) * step(0.5, u_bass); 
+                vec3 col7 = vec3(0.7, 1.0, 0.7) * blockTrigger * 0.7 * phase3;
+                
+                // === 레이어 10: 회전 십자선 (Phase 3+) ===
+                vec2 centerUV = vTexCoord - 0.5; 
+                float angle = u_time * 0.6; 
+                float s = sin(angle); 
+                float c = cos(angle); 
+                vec2 rotUV = vec2(centerUV.x * c - centerUV.y * s, centerUV.x * s + centerUV.y * c); 
+                float crosshair = (step(0.993, 1.0 - abs(rotUV.x)) + step(0.993, 1.0 - abs(rotUV.y))) * step(dist, 0.45); 
+                vec3 col8 = vec3(0.85, 1.0, 0.85) * crosshair * 0.9 * phase3;
+                
+                // === 레이어 11: 체커보드 플래시 (Phase 3+) ===
+                float checker = step(0.5, fract(uv.x * 12.0 + u_time * 0.5)) * step(0.5, fract(uv.y * 12.0)); 
+                vec3 col12 = vec3(1.0) * checker * step(0.65, u_bass) * 0.6 * phase3;
 
-                float wave = sin(dist * 40.0 - u_time * 15.0); 
-                vec3 col3 = vec3(0.5, 1.0, 0.5) * smoothstep(0.9, 0.95, abs(wave)) * u_bass * phase4;
-                float angleV = atan(centerUV.y, centerUV.x); float spiral = sin(angleV * 10.0 + dist * 20.0 - u_time * 10.0); vec3 col15 = vec3(0.2, 0.0, 0.5) * smoothstep(0.2, 0.8, spiral) * u_treble * phase4;
-                vec3 col10 = vec3(1.0) * step(0.85, u_bass) * step(0.5, sin(u_time * 50.0)) * 0.8 * phase4;
+                // === 레이어 12: 동심원 파동 (Phase 4+) ===
+                float wave = sin(dist * 45.0 - u_time * 18.0); 
+                vec3 col3 = vec3(0.6, 1.0, 0.6) * smoothstep(0.88, 0.93, abs(wave)) * u_bass * phase4;
+                
+                // === 레이어 13: 나선 패턴 (Phase 4+) ===
+                float angleV = atan(centerUV.y, centerUV.x); 
+                float spiral = sin(angleV * 12.0 + dist * 25.0 - u_time * 12.0); 
+                vec3 col15 = vec3(0.25, 0.0, 0.6) * smoothstep(0.25, 0.85, spiral) * u_treble * phase4;
+                
+                // === 레이어 14: 스트로브 플래시 (Phase 4+) ===
+                vec3 col10 = vec3(1.0) * step(0.82, u_bass) * step(0.5, sin(u_time * 60.0)) * 0.9 * phase4;
 
+                // 모든 레이어 합성
                 vec3 finalColor = col1 + col11 + col4 + col5 + col2 + col6 + col13 + col9 + col14 + col7 + col8 + col12 + col3 + col15 + col10;
                 
-                // Rainbow Overload with Cut-off (90% ~ 97%)
+                // === 클라이맥스 효과: 무지개 오버로드 (90% ~ 97%) ===
                 if(climaxTrigger > 0.0) {
-                    vec3 changingColor = 0.5 + 0.5 * cos(u_time * 5.0 + uv.xyx * 3.0 + vec3(0, 2, 4));
-                    finalColor = mix(finalColor, finalColor * changingColor * 4.0, climaxTrigger * 0.8 * (0.5 + u_bass));
+                    vec3 changingColor = 0.5 + 0.5 * cos(u_time * 6.0 + uv.xyx * 3.5 + vec3(0, 2, 4));
+                    finalColor = mix(finalColor, finalColor * changingColor * 5.0, climaxTrigger * 0.85 * (0.6 + u_bass * 0.4));
                 }
 
-                float splitPower = 0.5 + phase4 * 0.5; float rOffset = u_bass * 0.06 * splitPower; float bOffset = -u_bass * 0.06 * splitPower; 
-                finalColor.r += noise(uv + vec2(rOffset, 0.0)) * u_bass * 0.5; 
-                finalColor.b += noise(uv + vec2(bOffset, 0.0)) * u_bass * 0.5;
-                finalColor = pow(finalColor, vec3(1.1)) * 1.4;
+                // RGB 분리 효과 (크로마틱 에버레이션)
+                float splitPower = 0.6 + phase4 * 0.6; 
+                float rOffset = u_bass * 0.07 * splitPower; 
+                float bOffset = -u_bass * 0.07 * splitPower; 
+                finalColor.r += noise(uv + vec2(rOffset, 0.0)) * u_bass * 0.6; 
+                finalColor.b += noise(uv + vec2(bOffset, 0.0)) * u_bass * 0.6;
+                
+                // 컬러 그레이딩 & 대비 향상
+                finalColor = pow(finalColor, vec3(1.15)) * 1.5;
+                
                 gl_FragColor = vec4(finalColor, 1.0);
             }
         `;
 
+        // ==========================================
+        // p5.js 메인 로직
+        // ==========================================
         let theShader, song, fft;
         let isPlaying = false;
         let isLoaded = false;
-
-        const startScreen = document.getElementById('start-screen');
-        const enterBtn = document.getElementById('enter-btn');
-        const statusText = document.getElementById('status-text');
-        const playBtn = document.getElementById('play-btn');
-        const volSlider = document.getElementById('vol-slider');
-        const progSlider = document.getElementById('prog-slider');
-        const currentTimeSpan = document.getElementById('current-time');
-        const progressBar = document.getElementById('progress-bar');
+        let loadProgress = 0;
 
         function preload() {
             song = loadSound('homie.mp3', 
                 () => { 
                     isLoaded = true;
-                    enterBtn.innerText = "START";
+                    enterBtn.innerHTML = "START";
                     enterBtn.classList.add('active');
                     statusText.innerText = "SYSTEM READY";
                     statusText.style.color = "#0f0";
                 },
                 (err) => { 
+                    console.error('Audio load error:', err);
                     statusText.innerHTML = "ERROR: 'homie.mp3' NOT FOUND";
                     statusText.style.color = "#f00";
                     enterBtn.innerText = "FAIL";
+                },
+                (progress) => {
+                    loadProgress = progress;
+                    let percent = Math.floor(progress * 100);
+                    statusText.innerText = `LOADING... ${percent}%`;
                 }
             );
         }
@@ -340,11 +1131,11 @@
             noStroke();
             theShader = createShader(vertShader, fragShader);
             shader(theShader);
-            fft = new p5.FFT(0.5, 512);
+            fft = new p5.FFT(0.6, 1024); // 더 높은 해상도
         }
 
         function draw() {
-            let bass=0, mid=0, treble=0;
+            let bass = 0, mid = 0, treble = 0;
             let progress = 0;
 
             if (song && isPlaying && isLoaded) {
@@ -352,17 +1143,26 @@
                 let bassE = fft.getEnergy("bass");
                 let midE = fft.getEnergy("mid"); 
                 let trebleE = fft.getEnergy("treble");
-                bass = map(bassE, 20, 180, 0, 1.0, true); 
-                mid = map(midE, 20, 150, 0, 1.0, true);
-                treble = map(trebleE, 10, 150, 0, 1.0, true);
+                
+                // 더 반응적인 매핑
+                bass = map(bassE, 20, 200, 0, 1.0, true); 
+                mid = map(midE, 20, 170, 0, 1.0, true);
+                treble = map(trebleE, 10, 170, 0, 1.0, true);
+
+                // 스무딩 적용 (더 부드러운 전환)
+                bass = lerp(bass, map(bassE, 20, 200, 0, 1.0, true), 0.3);
+                mid = lerp(mid, map(midE, 20, 170, 0, 1.0, true), 0.3);
+                treble = lerp(treble, map(trebleE, 10, 170, 0, 1.0, true), 0.3);
 
                 if (song.duration() > 0) {
                     progress = song.currentTime() / song.duration();
                 }
                 progressBar.style.width = (progress * 100) + "%";
             } else {
-                bass = (sin(millis()/500) * 0.5 + 0.5) * 0.2;
-                mid = 0.1; treble = 0.05;
+                // 데모 모드
+                bass = (sin(millis() / 500) * 0.5 + 0.5) * 0.25;
+                mid = (sin(millis() / 700) * 0.5 + 0.5) * 0.15; 
+                treble = (sin(millis() / 900) * 0.5 + 0.5) * 0.1;
             }
 
             theShader.setUniform('u_time', millis() / 1000.0);
@@ -372,38 +1172,64 @@
             theShader.setUniform('u_treble', treble);
             theShader.setUniform('u_progress', progress);
 
-            rect(-width/2, -height/2, width, height);
+            rect(-width / 2, -height / 2, width, height);
             updateUI();
         }
 
-        function windowResized() { resizeCanvas(windowWidth, windowHeight); }
+        function windowResized() { 
+            resizeCanvas(windowWidth, windowHeight); 
+        }
 
-        enterBtn.addEventListener('click', () => {
-            if (isLoaded) {
+        // ==========================================
+        // 이벤트 리스너
+        // ==========================================
+        enterBtn.addEventListener('click', startExperience);
+
+        function startExperience() {
+            if (isLoaded && !isPlaying) {
                 startScreen.style.opacity = 0;
                 setTimeout(() => { 
                     startScreen.style.display = 'none'; 
-                    document.getElementById('smart-dock').style.display = 'block'; 
-                }, 800);
+                    smartDock.style.display = 'block'; 
+                }, 1000);
+                
                 song.play();
-                // [수정됨] 시작 시 볼륨을 슬라이더 값(1.5)으로 즉시 적용
                 song.setVolume(parseFloat(volSlider.value));
                 isPlaying = true;
+                playBtn.innerText = "|| PAUSE";
+            }
+        }
+
+        playBtn.addEventListener('click', () => {
+            if (!song || !isLoaded) return;
+            
+            if (song.isPlaying()) { 
+                song.pause(); 
+                playBtn.innerText = "▶ PLAY"; 
+                isPlaying = false; 
+            } else { 
+                song.play(); 
+                playBtn.innerText = "|| PAUSE"; 
+                isPlaying = true; 
             }
         });
 
-        playBtn.addEventListener('click', () => {
-            if (!song) return;
-            if (song.isPlaying()) { song.pause(); playBtn.innerText = "▶ PLAY"; isPlaying = false; } 
-            else { song.play(); playBtn.innerText = "|| PAUSE"; isPlaying = true; }
+        volSlider.addEventListener('input', (e) => { 
+            if (song && isLoaded) {
+                song.setVolume(parseFloat(e.target.value)); 
+            }
         });
 
-        volSlider.addEventListener('input', () => { if(song) song.setVolume(parseFloat(volSlider.value)); });
-        progSlider.addEventListener('input', () => {
-            if(song) {
-                let val = parseFloat(progSlider.value);
+        progSlider.addEventListener('input', (e) => {
+            if (song && isLoaded) {
+                let val = parseFloat(e.target.value);
                 song.jump(map(val, 0, 100, 0, song.duration()));
-                if(!isPlaying) { song.play(); isPlaying = true; playBtn.innerText="|| PAUSE"; }
+                
+                if (!isPlaying) { 
+                    song.play(); 
+                    isPlaying = true; 
+                    playBtn.innerText = "|| PAUSE"; 
+                }
             }
         });
 
@@ -411,9 +1237,35 @@
             if (song && isPlaying && !progSlider.matches(':active')) {
                 progSlider.value = map(song.currentTime(), 0, song.duration(), 0, 100);
                 let t = song.currentTime();
-                currentTimeSpan.innerText = nf(Math.floor(t/60),2) + ":" + nf(Math.floor(t%60),2);
+                currentTimeSpan.innerText = nf(Math.floor(t / 60), 2) + ":" + nf(Math.floor(t % 60), 2);
             }
         }
+
+        // ==========================================
+        // 키보드 단축키
+        // ==========================================
+        document.addEventListener('keydown', (e) => {
+            // 스페이스바로 재생/일시정지
+            if (e.code === 'Space' && isLoaded && startScreen.style.display === 'none') {
+                e.preventDefault();
+                playBtn.click();
+            }
+            
+            // Escape로 컨트롤 패널 닫기
+            if (e.code === 'Escape' && smartDock.classList.contains('expanded')) {
+                toggleDock();
+            }
+        });
+
+        // ==========================================
+        // 성능 최적화: 백그라운드 탭 감지
+        // ==========================================
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && song && isPlaying) {
+                // 백그라운드에서도 음악 재생 유지 (선택사항)
+                // song.pause();
+            }
+        });
     </script>
 </body>
 </html>
