@@ -223,6 +223,9 @@
 
         const vertShader = `attribute vec3 aPosition; attribute vec2 aTexCoord; varying vec2 vTexCoord; void main() { vTexCoord = aTexCoord; vec4 positionVec4 = vec4(aPosition, 1.0); positionVec4.xy = positionVec4.xy * 2.0 - 1.0; gl_Position = positionVec4; }`;
 
+        // ==========================================
+        // [수정됨] 쉐이더: 90% 시작 ~ 97% 종료
+        // ==========================================
         const fragShader = `
             #ifdef GL_ES
             precision mediump float;
@@ -239,15 +242,14 @@
                 vec2 uv = vTexCoord;
                 float phase2 = smoothstep(0.2, 0.3, u_progress); float phase3 = smoothstep(0.5, 0.6, u_progress); float phase4 = smoothstep(0.8, 0.85, u_progress);
                 
-                // [NEW] Climax Trigger: 85% ~ 98% (Before end)
-                // 0.85에서 서서히 시작하고, 0.98에서 서서히 사라짐
-                float climaxTrigger = smoothstep(0.85, 0.88, u_progress) * (1.0 - smoothstep(0.98, 0.99, u_progress));
+                // [NEW] Climax Trigger: 90% ~ 97% (Adjusted)
+                // 0.90에서 서서히 시작하고, 0.97에서 서서히 사라짐
+                float climaxTrigger = smoothstep(0.90, 0.93, u_progress) * (1.0 - smoothstep(0.97, 0.98, u_progress));
 
                 float glitchBase = u_bass * (0.1 + phase3 * 0.3 + phase4 * 0.5); 
                 float shake = (random(vec2(u_time)) - 0.5) * glitchBase; 
                 
-                // [NEW] Global Screen Shake Effect at Climax
-                // 클라이맥스일 때 전체 화면을 강하게 흔듬 (베이스에 반응)
+                // [NEW] Global Screen Shake Effect at Climax (90% start)
                 float heavyShake = (random(vec2(u_time * 10.0)) - 0.5) * 0.15 * climaxTrigger * u_bass;
                 
                 uv.x += step(0.95, sin(uv.y * 40.0 + u_time * 15.0)) * glitchBase * 0.4; 
@@ -278,8 +280,7 @@
 
                 vec3 finalColor = col1 + col11 + col4 + col5 + col2 + col6 + col13 + col9 + col14 + col7 + col8 + col12 + col3 + col15 + col10;
                 
-                // [NEW] Rainbow Overload with Cut-off
-                // climaxTrigger 변수를 사용하여 85%에 켜고 98%에 끔
+                // [NEW] Rainbow Overload with Cut-off (90% ~ 97%)
                 if(climaxTrigger > 0.0) {
                     vec3 changingColor = 0.5 + 0.5 * cos(u_time * 5.0 + uv.xyx * 3.0 + vec3(0, 2, 4));
                     finalColor = mix(finalColor, finalColor * changingColor * 4.0, climaxTrigger * 0.8 * (0.5 + u_bass));
@@ -404,4 +405,3 @@
     </script>
 </body>
 </html>
-
