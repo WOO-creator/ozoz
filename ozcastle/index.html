@@ -2,9 +2,6 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    
-    <meta name="robots" content="noindex, nofollow">
-    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>welcome to ozcastle</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
@@ -17,64 +14,99 @@
         body { margin: 0; padding: 0; background-color: #000; overflow: hidden; font-family: 'Courier New', Courier, monospace; color: #0f0; }
 
         /* =========================================
-           2. 인트로 (Typewriter + Blur/Zoom) - 4초 효과 + 3초 대기
+           2. 인트로 페이지 (Security Gate)
            ========================================= */
-        #intro-overlay {
+        #intro-layer {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: 9999;
-            background-color: #000;
+            
+            /* 3D 회전 설정 */
+            transform-origin: left center;
+            transition: transform 1.5s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+            background-color: #111;
+            
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            /* 10.5초 후 사라짐 */
-            animation: fadeOutOverlay 1s ease-in-out 10.5s forwards;
+            box-shadow: 10px 0 30px rgba(0,255,0,0.2);
         }
 
-        .intro-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('intro.png');
-            background-size: cover;
-            background-position: center;
-            filter: brightness(0.4) blur(10px);
-            transform: scale(1.2);
-            /* 3.5초 대기 -> 4초 효과 */
-            animation: revealBackground 4s ease-in-out 3.5s forwards;
+        /* 인트로 이미지 스타일 */
+        #intro-layer img {
+            max-width: 300px;
+            height: auto;
+            border: 2px solid #0f0;
+            box-shadow: 0 0 20px #0f0;
+            border-radius: 5px;
+            margin-bottom: 20px;
         }
 
-        .intro-content { position: relative; z-index: 10; text-align: center; }
+        /* [NEW] 비밀번호 입력 UI 스타일 */
+        .login-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
 
-        .typewriter {
+        #pass-input {
+            background: #000;
+            border: 1px solid #0f0;
+            color: #0f0;
+            padding: 10px;
             font-family: 'Courier New', Courier, monospace;
-            color: #f0e68c;
-            font-size: 2.5rem;
+            font-size: 1.2rem;
+            text-align: center;
+            width: 200px;
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+        #pass-input:focus { box-shadow: 0 0 20px rgba(0, 255, 0, 0.8); }
+
+        #access-btn {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #0f0;
+            color: #0f0;
+            padding: 8px 20px;
+            cursor: pointer;
             font-weight: bold;
-            white-space: nowrap;
-            overflow: hidden;
-            border-right: 3px solid #f0e68c;
-            width: 0;
-            animation: 
-                typing 3s steps(22) forwards,
-                blinkCursor 0.7s step-end infinite,
-                fadeOutText 0.5s ease-in-out 4.5s forwards;
+            font-family: 'Courier New', Courier, monospace;
+            transition: 0.3s;
+        }
+        #access-btn:hover { background: #0f0; color: #000; }
+
+        #error-msg {
+            color: #f00;
+            font-weight: bold;
+            height: 20px;
+            text-shadow: 0 0 5px #f00;
+            opacity: 0;
+            transition: opacity 0.2s;
         }
 
-        @keyframes typing { from { width: 0; } to { width: 100%; } }
-        @keyframes blinkCursor { from, to { border-color: transparent; } 50% { border-color: #f0e68c; } }
-        @keyframes revealBackground { to { filter: brightness(1) blur(0); transform: scale(1); } }
-        @keyframes fadeOutText { to { opacity: 0; } }
-        @keyframes fadeOutOverlay { to { opacity: 0; visibility: hidden; } }
-        @media (max-width: 768px) { .typewriter { font-size: 1.5rem; } }
+        /* 틀렸을 때 흔들리는 애니메이션 */
+        .shake { animation: shake 0.5s; }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+
+        /* 책장이 넘어갔을 때 */
+        .page-turned {
+            transform: perspective(2000px) rotateY(-110deg);
+            pointer-events: none;
+        }
 
         /* =========================================
-           3. UI (ozcastle)
+           3. 뮤직 플레이어 UI (ozcastle)
            ========================================= */
         #canvas-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
         
@@ -101,22 +133,46 @@
 
         #smart-dock {
             position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 60px; height: 60px; background: rgba(0, 10, 0, 0.9);
-            border: 2px solid #0f0; border-radius: 50px; box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
-            overflow: hidden; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 20;
-            display: none; backdrop-filter: blur(10px);
+            width: 60px; height: 60px;
+            background: rgba(0, 10, 0, 0.9);
+            border: 2px solid #0f0;
+            border-radius: 50px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 20;
+            display: none;
+            backdrop-filter: blur(10px);
         }
-        #smart-dock.expanded { width: 400px; height: 180px; border-radius: 20px; border-color: #fff; box-shadow: 0 0 50px rgba(0, 255, 0, 0.2); }
-        #dock-toggle { position: absolute; bottom: 0; left: 0; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 22; font-size: 24px; }
+        #smart-dock.expanded {
+            width: 400px; height: 180px;
+            border-radius: 20px;
+            border-color: #fff;
+            box-shadow: 0 0 50px rgba(0, 255, 0, 0.2);
+        }
+        #dock-toggle {
+            position: absolute; bottom: 0; left: 0; width: 60px; height: 60px;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; z-index: 22; font-size: 24px;
+        }
         #dock-icon { transition: 0.3s; }
         #smart-dock.expanded #dock-icon { opacity: 0; }
-        #controls-inner { position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+
+        #controls-inner {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            padding: 20px; box-sizing: border-box;
+            display: flex; flex-direction: column; justify-content: center;
+            opacity: 0; transition: opacity 0.2s; pointer-events: none;
+        }
         #smart-dock.expanded #controls-inner { opacity: 1; pointer-events: auto; transition-delay: 0.1s; }
+
         #close-btn { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; color: #666; transition: 0.2s; }
         #close-btn:hover { color: #fff; }
+
         .control-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         button.cyber-btn { background: transparent; border: 1px solid #0f0; color: #0f0; padding: 8px 16px; font-size: 14px; font-weight: bold; cursor: pointer; border-radius: 4px; }
         button.cyber-btn:hover { background: #0f0; color: #000; }
+
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type=range]:focus { outline: none; }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%; background: #0f0; margin-top: -5px; cursor: pointer; box-shadow: 0 0 10px #0f0; }
@@ -126,29 +182,13 @@
 </head>
 <body>
 
-    <script>
-        (function() {
-            if (sessionStorage.getItem('oz_access') === 'granted') return;
-            const password = prompt("ACCESS CODE REQUIRED\n(wassup)", "");
-            if (password === "0202") { 
-                sessionStorage.setItem('oz_access', 'granted');
-            } else {
-                document.body.innerHTML = `
-                    <div style="height:100vh; display:flex; justify-content:center; align-items:center; flex-direction:column; background:black; color:#f00; font-family:'Courier New';">
-                        <h1 style="font-size:3em; margin:0;">ACCESS DENIED</h1>
-                        <p>SYSTEM LOCKED</p>
-                        <button onclick="location.reload()" style="margin-top:20px; padding:10px 20px; border:1px solid #0f0; background:black; color:#0f0; cursor:pointer;">RETRY</button>
-                    </div>
-                `;
-                throw new Error("damn~");
-            }
-        })();
-    </script>
-
-    <div id="intro-overlay">
-        <div class="intro-bg"></div>
-        <div class="intro-content">
-            <h1 class="typewriter">welcome to ozcastle...</h1>
+    <div id="intro-layer">
+        <img src="intro.png" alt="System Access Card">
+        
+        <div class="login-box">
+            <div id="error-msg">ACCESS DENIED</div>
+            <input type="password" id="pass-input" placeholder="ENTER PASSWORD">
+            <button id="access-btn" onclick="checkPassword()">UNLOCK</button>
         </div>
     </div>
 
@@ -168,7 +208,6 @@
         </div>
         <div id="controls-inner">
             <div id="close-btn" onclick="toggleDock()">✕</div>
-            
             <div class="control-row" style="margin-top: 10px;">
                 <button id="play-btn" class="cyber-btn">|| PAUSE</button>
                 <span id="current-time" style="font-size: 14px; color: #fff;">00:00</span>
@@ -185,14 +224,53 @@
     </div>
 
     <script>
+        // ==========================================
+        // 1. PASSWORD & INTRO LOGIC
+        // ==========================================
+        const CORRECT_PASSWORD = "0202";
+
+        function checkPassword() {
+            const inputField = document.getElementById('pass-input');
+            const errorMsg = document.getElementById('error-msg');
+            const introDiv = document.getElementById('intro-layer');
+
+            if (inputField.value === CORRECT_PASSWORD) {
+                // 비밀번호 정답
+                introDiv.classList.add('page-turned'); // 페이지 넘김 효과
+                setTimeout(() => {
+                    introDiv.style.display = 'none';
+                }, 1500);
+            } else {
+                // 비밀번호 오답
+                errorMsg.style.opacity = 1;
+                inputField.classList.add('shake'); // 흔들림 효과
+                inputField.value = ''; // 입력창 초기화
+                
+                // 애니메이션 끝나면 클래스 제거 (재사용 위해)
+                setTimeout(() => {
+                    inputField.classList.remove('shake');
+                    errorMsg.style.opacity = 0;
+                }, 1000);
+            }
+        }
+
+        // 엔터키 입력 감지
+        document.getElementById('pass-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        // 스마트 독 토글
         const smartDock = document.getElementById('smart-dock');
         function toggleDock() { smartDock.classList.toggle('expanded'); }
 
-        const vertShader = `attribute vec3 aPosition; attribute vec2 aTexCoord; varying vec2 vTexCoord; void main() { vTexCoord = aTexCoord; vec4 positionVec4 = vec4(aPosition, 1.0); positionVec4.xy = positionVec4.xy * 2.0 - 1.0; gl_Position = positionVec4; }`;
 
         // ==========================================
-        // [수정됨] FRAGMENT SHADER (색상 폭주 효과 추가)
+        // 2. 15-LAYER SHADER CODE (Original)
         // ==========================================
+        const vertShader = `attribute vec3 aPosition; attribute vec2 aTexCoord; varying vec2 vTexCoord; void main() { vTexCoord = aTexCoord; vec4 positionVec4 = vec4(aPosition, 1.0); positionVec4.xy = positionVec4.xy * 2.0 - 1.0; gl_Position = positionVec4; }`;
+
         const fragShader = `
             #ifdef GL_ES
             precision mediump float;
@@ -212,17 +290,19 @@
                 float glitchBase = u_bass * (0.1 + phase3 * 0.3 + phase4 * 0.5); 
                 float shake = (random(vec2(u_time)) - 0.5) * glitchBase; uv.x += step(0.95, sin(uv.y * 40.0 + u_time * 15.0)) * glitchBase * 0.4; uv.x += shake;
 
-                // L1 ~ L3 (기존 코드 유지)
+                // L1: Fog
                 float fog = noise(uv * 3.0 + u_time * 0.2); vec3 col1 = vec3(0.0, 0.15 + sin(u_time)*0.05, 0.05) * fog;
                 vec3 col11 = (vec3(0.0, 0.05, 0.2) + vec3(sin(u_time*0.5)*0.02)) * (1.0 - length(vTexCoord - 0.5));
                 float rain = step(0.9, random(vec2(floor(uv.x * 60.0), floor(uv.y * 15.0 + u_time * 8.0)))); vec3 col4 = vec3(0.0, 0.9, 0.0) * rain * 0.4;
                 vec3 col5 = vec3(random(uv * u_time * 20.0)) * u_treble * 0.3;
 
+                // L2 (Phase 2)
                 vec2 gridUV = uv; gridUV.y += 0.5; gridUV /= abs(uv.y + 0.2); float grid = step(0.95, fract(gridUV.x * 5.0 + u_time)) + step(0.95, fract(gridUV.y * 5.0)); grid *= smoothstep(0.0, 0.5, abs(uv.y)); vec3 col2 = vec3(0.0, 0.8, 0.2) * grid * u_mid * phase2;
                 vec2 hexUV = uv; hexUV -= 0.5; hexUV = rotate2d(u_time * 0.1) * hexUV; hexUV += 0.5; hexUV = hexUV * 5.0; hexUV.x *= 1.1547; float hex = step(0.4, 0.5 - hexDist(fract(hexUV) - 0.5)); vec3 col6 = vec3(0.0, 0.3, 0.1) * hex * (0.2 + u_bass * 0.5) * phase2;
                 float waveY = uv.y - 0.5; float waveLine = sin(uv.x * 20.0 + u_time * 5.0) * u_bass * 0.2; vec3 col13 = vec3(0.5, 0.8, 1.0) * smoothstep(0.01, 0.0, abs(waveY - waveLine)) * phase2;
                 float dist = length(vTexCoord - 0.5); float breath = sin(u_time * 2.0) * 0.05; vec3 col9 = vec3(0.2, 1.0, 1.0) * smoothstep(0.01, 0.0, abs(dist - (0.3 + u_mid * 0.2 + breath))) * phase2;
 
+                // L3 (Phase 3)
                 vec2 triPos = uv - 0.5; triPos = rotate2d(u_time * -0.3) * triPos; triPos += 0.5; vec2 triUV = fract(triPos * 4.0) - 0.5; float tri = step(0.3, 0.4 - triDist(triUV)); vec3 triColor = mix(vec3(0.8, 0.0, 0.4), vec3(0.0, 0.8, 0.8), sin(u_time)*0.5+0.5); vec3 col14 = triColor * tri * u_mid * 0.5 * phase3;
                 vec2 blockUV = floor(uv * 10.0); float blockTrigger = step(0.8, random(blockUV + floor(u_time * 10.0))) * step(0.5, u_bass); vec3 col7 = vec3(0.6, 1.0, 0.6) * blockTrigger * 0.6 * phase3;
                 vec2 centerUV = vTexCoord - 0.5; float angle = u_time * 0.5; float s = sin(angle); float c = cos(angle); vec2 rotUV = vec2(centerUV.x * c - centerUV.y * s, centerUV.x * s + centerUV.y * c); float crosshair = (step(0.995, 1.0 - abs(rotUV.x)) + step(0.995, 1.0 - abs(rotUV.y))) * step(dist, 0.4); vec3 col8 = vec3(0.8, 1.0, 0.8) * crosshair * 0.8 * phase3;
@@ -231,30 +311,21 @@
                 // L4 (Phase 4)
                 float wave = sin(dist * 40.0 - u_time * 15.0); 
                 vec3 col3 = vec3(0.5, 1.0, 0.5) * smoothstep(0.9, 0.95, abs(wave)) * u_bass * phase4;
+                
                 float angleV = atan(centerUV.y, centerUV.x); float spiral = sin(angleV * 10.0 + dist * 20.0 - u_time * 10.0); vec3 col15 = vec3(0.2, 0.0, 0.5) * smoothstep(0.2, 0.8, spiral) * u_treble * phase4;
                 vec3 col10 = vec3(1.0) * step(0.85, u_bass) * step(0.5, sin(u_time * 50.0)) * 0.8 * phase4;
 
                 // FINAL MIX
                 vec3 finalColor = col1 + col11 + col4 + col5 + col2 + col6 + col13 + col9 + col14 + col7 + col8 + col12 + col3 + col15 + col10;
-                
-                // [NEW EFFECT] Rainbow Overload at 90% Progress
-                // 진행도 0.9부터 무지개빛 폭주 시작
-                float rainbowMix = smoothstep(0.9, 0.95, u_progress); 
-                if(rainbowMix > 0.0) {
-                    // 시간과 위치에 따라 색이 변하는 팔레트 생성 (Cosine Palette)
-                    vec3 changingColor = 0.5 + 0.5 * cos(u_time * 5.0 + uv.xyx * 3.0 + vec3(0, 2, 4));
-                    // 기존 색상에 비트(Bass)에 반응하는 강렬한 색상을 섞음
-                    finalColor = mix(finalColor, finalColor * changingColor * 4.0, rainbowMix * 0.8 * (0.5 + u_bass));
-                }
-
-                float splitPower = 0.5 + phase4 * 0.5; float rOffset = u_bass * 0.06 * splitPower; float bOffset = -u_bass * 0.06 * splitPower; 
-                finalColor.r += noise(uv + vec2(rOffset, 0.0)) * u_bass * 0.5; 
-                finalColor.b += noise(uv + vec2(bOffset, 0.0)) * u_bass * 0.5;
+                float splitPower = 0.5 + phase4 * 0.5; float rOffset = u_bass * 0.06 * splitPower; float bOffset = -u_bass * 0.06 * splitPower; finalColor.r += noise(uv + vec2(rOffset, 0.0)) * u_bass * 0.5; finalColor.b += noise(uv + vec2(bOffset, 0.0)) * u_bass * 0.5;
                 finalColor = pow(finalColor, vec3(1.1)) * 1.4;
                 gl_FragColor = vec4(finalColor, 1.0);
             }
         `;
 
+        // ==========================================
+        // 3. P5.JS LOGIC
+        // ==========================================
         let theShader, song, fft;
         let isPlaying = false;
         let isLoaded = false;
@@ -262,6 +333,8 @@
         const startScreen = document.getElementById('start-screen');
         const enterBtn = document.getElementById('enter-btn');
         const statusText = document.getElementById('status-text');
+        
+        const dock = document.getElementById('smart-dock');
         const playBtn = document.getElementById('play-btn');
         const volSlider = document.getElementById('vol-slider');
         const progSlider = document.getElementById('prog-slider');
@@ -334,7 +407,7 @@
                 startScreen.style.opacity = 0;
                 setTimeout(() => { 
                     startScreen.style.display = 'none'; 
-                    document.getElementById('smart-dock').style.display = 'block'; 
+                    dock.style.display = 'block'; 
                 }, 800);
                 song.play();
                 isPlaying = true;
